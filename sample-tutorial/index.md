@@ -4,9 +4,9 @@ kind: tutorial
 title: Sample Tutorial
 
 description: |
-  Learn how to use the iximiuz Labs platform to create tutorials that combine markdown,
-  interactive playgrounds, dynamic tasks, and rich visual elements to provide a fun and
-  effective learning experience.
+  Learn how to author tutorials on iximiuz Labs:
+  combine markdown, interactive playgrounds, a powerful task engine,
+  and rich visual elements to provide engaging and hands-on learning experience.
 
 categories:
   - linux
@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-03-28
+updatedAt: 2025-03-29
 
 cover: __static__/cover.png
 
@@ -261,18 +261,28 @@ challenges:
 ---
 
 This is a self-documenting sample that serves as a guide on how to author **tutorials** on iximiuz Labs.
-You can find the source of this document on [GitHub](https://github.com/iximiuz/labs-content-samples).
+You can find the source of this document on [GitHub](https://github.com/iximiuz/labs-content-samples/tree/main/sample-tutorial).
 Feel free to use it as a starting point for your own tutorials.
 
-## What is a Tutorial?
+## What is a Tutorial on iximiuz Labs?
 
 Tutorials are deep dives into DevOps and server-side topics where theory blends with hands-on examples.
-You can think of them as a combination of a blog post and a playground.
+You can think of them as a **combination of a traditional blog post and a Linux playground**.
 A tutorial can be just a few paragraphs long or as large as a book (but in the latter case,
-please consider splitting it into multiple tutorials or turning it into a [course](/new/course)):
+please consider splitting it into multiple tutorials or turning it into a [course](/new/course)).
 
-- Tutorials can (and often should) contain code snippets, images, and _interactive tasks_ (see below).
-- Authenticated users can start and complete tutorials, with the corresponding progress reflected in their personal dashboard.
+What makes iximiuz Labs tutorials special:
+
+- Explanatory drawings, screenshots, and diagrams.
+- Reproducible shell commands and code snippets.
+- Interactive tasks with immediate feedback.
+- Ability to access the playground directly from the browser.
+- Complementary [challenges](/new/challenge) for more comprehensive learning experience.
+
+Assuming the tutorial is published and accessible (see _access control_ below),
+non-authenticated users are typically allowed to read the tutorial's content,
+while authenticated users can start the tutorial's playground and mark the tutorial as completed,
+with the corresponding progress reflected in their personal dashboard.
 
 ## How to Edit the Tutorial
 
@@ -288,6 +298,7 @@ keeping the full control over the raw content source and staying out of the way 
 ---
 kind: warning
 ---
+
 We encourage you to store the source of your tutorials in a git repository,
 similarly to how you manage code projects.
 This way, you can benefit from the versioning and backup features of git.
@@ -298,12 +309,34 @@ click "Open in Editor" button in the tutorial's menu:
 
 ![Open in Editor](__static__/open-in-editor.png)
 
+## How to Control Tutorial Access
+
+Authors can control who can _list_, _preview_, _read_, and _start_ their tutorials.
+Every tutorial starts as a **private** draft, meaning only the author can access it.
+When the tutorial is ready, the author can choose to make it **public**
+(accessible to everyone with the link) or configure _more granular_ access.
+
+The access control settings can be opened from the tutorial's menu:
+
+![Controlling tutorial access](__static__/tutorial-access-control.png)
+
+::remark-box
+---
+kind: warning
+---
+
+While publication via a direct link is always possible,
+the iximiuz Labs team reserves the right to choose which tutorials will be listed in the [catalog(s)](/tutorials?filter=community).
+**Setting `canList` to `["anyone"]` is treated only as an indicator of the author's willingness to list the tutorial in one of the platform's catalogs.**
+Authors can explicitly prohibit listing by setting the `canList` attribute to `["owner"]`.
+::
+
 ## Tutorial Metadata and Front Matter
 
 Every tutorial is represented by a markdown file that begins with a YAML _front matter_ block.
 The smallest possible front matter block for a tutorial should contain the following fields:
 
-```yaml
+```yaml [my-tutorial/index.md]
 ---
 kind: tutorial
 title: My Awesome Linux Containers Tutorial
@@ -328,33 +361,42 @@ The above fields are essential because they feed the platform with information u
 However, iximiuz Labs also supports a number of additional fields that can be used to:
 
 - Specify the tutorial's playground and its customization options.
-- Define _init_, _helper_, and _regular_ tasks to be executed on the playground.
-- Define accompanying the tutorial _challenges_ to later embed them with the `content-card` component.
+- Define _init_, _helper_, and _verification_ tasks to be executed on the playground's VMs.
+- List accompanying the tutorial _challenges_ to later embed them with the challenge card component.
 
 ::details-box
 ---
-:summary: Click here to see the full list of supported front matter fields
+:summary: Click here to see the full list of supported Front Matter fields
 ---
 
-```yaml
+```yaml [my-tutorial/index.md]
 ---
 kind: tutorial         # fixed
 
-title: <string>        # required
-description: <string>  # required
+title: <string>        # required, 10-120 characters
+description: <string>  # required, up to 500 characters
 
-# Up to 2 categories
+# Up to 2 categories from the closed list:
+# - linux
+# - networking
+# - containers
+# - kubernetes
+# - programming
+# - observability
+# - security
+# - ci-cd
 categories:            # required
   - category-1
   - category-2
 
-# Up to 5 tags
+# Up to 5 tags, preferably from the already existing ones:
+# curl https://labs.iximiuz.com/api/content/tags?kind=tutorial
 tagz:                  # required
   - tag-1
   - tag-2
 
-createdAt: <string>    # required
-updatedAt: <string>    # optional
+createdAt: <string>    # required, format: YYYY-MM-DD[THH:MM:SS]
+updatedAt: <string>    # optional, format: YYYY-MM-DD[THH:MM:SS]
 
 cover: __stаtic__/path/to/cover.png  # required
 
@@ -370,116 +412,332 @@ tasks:                 # optional
     ...
 
 challenges:            # optional
-  challenge_name_1: {}
-  challenge_name_2: {}
+  challenge_key_1: {}
+  challenge_key_2: {}
 ---
 ```
 ::
 
 ## Tutorial Markdown
 
-TODO:
+The _front matter_ section is followed by the markdown content of the tutorial.
+All standard markdown elements are supported, including:
 
-- Show how to embed images (`![](./path/to/image.png)`, `::image-box` and `::slide-show` components).
-- Show how to embed code snippets (including line highlighting and file names).
-- Show how to embed a remark box.
-- Show how to embed a details box.
-- Show how to embed a hint box.
-- Show how to embed a challenge using the `::card-challenge` component.
+- Bold, italic, and underlined text.
+- Headings and subheadings.
+- Paragraphs, lists, tables, etc.
+- Code blocks with optional syntax highlighting.
+- Image embedding with the `![alt](src)` syntax.
+- Relative and absolute links with the `[text](url)` syntax.
 
-### Additional Rich Markdown Elements
+In addition, iximiuz Labs extends standard markdown with rich visual and interactive components (see [MDC](https://nuxt.com/modules/mdc)).
 
-iximiuz Labs extends standard markdown with additional visual and interactive elements:
+### How to Embed Images
 
-#### Image Embedding
+All images referenced in the tutorial's markdown must be stored in the `__stаtic__` directory next to the `index.md` file,
+and their paths in the `src` attributes must be relative and start with `__stаtic__`.
+The `labctl content push` command will automatically upload all images from the static directory,
+and the relative paths will be substituted with the actual URLs when the tutorial is rendered as a web page.
 
-- Image Box: Use the ::image-box component to embed images with optional captions and defined maximum widths.
+While the standard markdown syntax for embedding images is supported,
+iximiuz Labs also offers two rich MDC components for embedding images.
+
+#### Zoomable Images with the `image-box` Component
+
+```markdown
+::image-box
+---
+:src: __stаtic__/<image-name>.(png|jpg|...)
+:alt: '<short image description>'
+:max-width: 1000px # optional
+:margin: 0px auto  # optional
+:padding: 10px     # optional
+:float: left|right # optional
+---
+
+_Optional caption goes here._
+::
+```
+
+Example:
 
 ::image-box
 ---
 :src: __static__/docker-run.png
-:alt: 'Docker run command under the hood: pulling the image, creating a container, attaching to the container, connecting to the network, and finally starting it.'
-:max-width: 1000px
+:alt: 'Docker run command under the hood: pulling the image, creating a container, attaching...'
+:max-width: 600px
 ---
+
+_Click on the image to zoom in._
 ::
 
-- Slide Show: Use the ::slide-show component to display a series of images (useful for diagrams or multi-step illustrations).
+
+#### Slide Show with the `slide-show` Component
+
+```markdown
+::slide-show
+---
+slides:
+- image: __stаtic__/<image1>.(png|jpg|...)
+  alt: <description of the first image>
+- image: __stаtic__/<image2>.(png|jpg|...)
+  alt: <description of the second image>
+- ...
+---
+::
+```
+
+Example:
 
 ::slide-show
 ---
 slides:
-  - image: __static__/builder-pattern-go.png
-    alt: "Builder Pattern for a Go application."
-  - image: __static__/builder-pattern-nodejs.png
-    alt: "Builder Pattern for a Node.js application."
+- image: __static__/builder-pattern-go.png
+  alt: "Builder Pattern for a Go application."
+- image: __static__/builder-pattern-nodejs.png
+  alt: "Builder Pattern for a Node.js application."
 ---
 ::
 
-#### Visual Boxes for Notes and Hints
+### How to Embed Code Snippets
 
-- Remark Box: Used to display warnings or important notes. It supports different kinds (e.g., warning or error).
+Inline code elements and code blocks are supported with the standard single- and triple-backtick syntax.
+For code blocks, you can optionally specify the language to enable syntax highlighting,
+add a (file)name to display in the code block, and highlight specific lines.
+
+Look up the below code snippet in the source of this tutorial on [GitHub](https://github.com/iximiuz/labs-content-samples/blob/main/sample-tutorial/index.md) to see how it's done:
+
+```yaml [~/my/file.yaml]{2,9-11}
+apiVersion: apps/v1
+kind: Deployment # highlighted line
+metadata:
+  name: my-app
+  namespace: default
+  labels:
+    app: my-app
+spec:
+  replicas: 3 # highlighted block
+  selector:
+    matchLabels:
+      app: my-app
+```
+
+### How to Embed Visual Boxes for Notes, Details, and Hints
+
+When information doesn't belong to the main flow of the tutorial, but it's still important to mention,
+you can use one of the following visual boxes:
+
+#### Remark Box
+
+Used to highlight side notes, warnings, or error messages.
+The minimal syntax for a remark box is as follows:
+
+```markdown
+::remark-box
+<side note text goes here>
+::
+```
+
+In the full form, you can also specify the kind of the remark box:
+
+```markdown
+::remark-box
+---
+kind: info|warning|error
+---
+
+<side note text goes here>
+::
+```
+
+Examples:
+
+::remark-box
+💡 This is an info remark box. The emoji is chosen arbitrarily.
+::
 
 ::remark-box
 ---
 kind: warning
 ---
-💡 Remember: Always attach a playground if your tutorial involves interactive commands.
+
+⚠️ This is a warning remark box. The emoji is chosen arbitrarily.
 ::
 
-- Details Box: A collapsible section for additional details, code snippets, or extended explanations.
+::remark-box
+---
+kind: error
+---
+
+❌ This is an error remark box. The emoji is chosen arbitrarily.
+::
+
+#### Details Box
+
+A collapsible section for additional details, code snippets, or extended explanations.
+
+```markdown
+::details-box
+---
+:summary: <summary text goes here>
+---
+
+<the collapsible section's content goes here>
+::
+```
+
+The content can be as long as needed and use all the supported markdown elements, except for nested details-boxes.
+
+Example:
 
 ::details-box
 ---
-:summary: More about container image layers
+:summary: Click here to expand/collapse the section
 ---
-The image layers are used for efficient caching and storage. Each layer represents a set of file changes.
+
+The collapsible section's content goes here.
+
+::remark-box
+---
+kind: warning
+---
+
+This is a warning remark box inside a details-box 🤯
 ::
 
--	Hint Box: Provides in-context hints for tasks without revealing too much. These are particularly useful for guiding users through troubleshooting.
+Code blocks are also supported inside details-boxes:
+
+```python
+def hello():
+    print("Hello, world!")
+```
+::
+
+#### Hint Box
+
+Very similar to the `details-box` component, but styled slightly differently and carries different semantics.
+
+```markdown
+::hint-box
+---
+:summary: Hint <number>
+---
+
+<hint text goes here>
+::
+```
+
+Example:
 
 ::hint-box
 ---
 :summary: Hint 1
 ---
+
 Try running `docker run --help` to see available flags for running containers in detached mode.
 ::
 
+### How to Embed Challenges
+
+A _challenge card_ is a rich link to the corresponding challenge that shows a preview of the challenge,
+some metadata, and a button to start the challenge.
+Authors can embed any challenges listed in the public [challenges catalog](/challenges) or prepare their own [challenges](/new/challenge).
+
+Challenges are embedded into the tutorial using the `card-challenge` component with the corresponding challenge ~~name~~ key:
+
+```markdown
+::card-challenge
+---
+# challenges is an object in the tutorial's front matter
+:challenge: challenges.<challenge_key>
+---
+::
+```
+
+**Before embedding a challenge, you must list it in the tutorial's Front Matter:**
+
+```yaml
+---
+kind: tutorial
+title: ...
+
+challenges:
+  <challenge_key_1>: {}
+  <challenge_key_2>: {}
+---
+```
+
+Examples:
+
+::card-challenge
+---
+:challenge: challenges.docker_101_container_run
+---
+::
+
+::card-challenge
+---
+:challenge: challenges.kubernetes_pod_with_faulty_init_sequence
+---
+::
+
+::remark-box
+
+To get a challenge key, take the challenge name (the last segment of the challenge's URL) and replace all `-` with `_`.
+The substitution is needed because `challenges` in the front matter is an object,
+so having a dash in the challenge name would break the object key syntax.
+
+Example:
+
+```
+# Challenge URL
+https://labs.iximiuz.com/challenges/docker-101-container-run
+
+# Challenge name
+docker-101-container-run
+
+# Challenge key
+docker_101_container_run
+```
+::
 
 ## Playground Configuration
 
 With every tutorial, you have the option to attach a remote playground -
 allowing users to run commands in a browser-based or SSH-accessible environment.
+To attach a playground to a tutorial, specify the playground name in the tutorial's Front Matter as follows:
 
-::remark-box
+```yaml
 ---
-kind: warning
----
-Tutorials can be created without a playground attached, but it is recommended to include one to enhance the learning experience.
-**Only tutorials with playgrounds can be started and completed by iximiuz Labs users.**
-::
+kind: tutorial
+title: ...
 
-At the moment, you can augment a tutorial only with an "official" iximiuz Labs playground.
+playground:
+  name: <playground-name>
+---
+```
+
+At the moment, you can only choose from the "official" iximiuz Labs playgrounds,
+but further customization is allowed by overriding the playground's `machines`, and `tabs` attributes (see below).
 Click [here](/playgrounds?filter=base) to see a full list of available playgrounds.
 
 ```sh
 curl -s https://labs.iximiuz.com/api/playgrounds?filter=base | jq -r '.[] | .name'
 ```
 
-While a tutorial can be authored without any playground configuration, it is highly recommended to attach a playground.
+While a tutorial can be created without a playground,
+it is highly recommended to attach one to enhance the learning experience.
 This gives users an interactive environment to execute commands and follow along with the tutorial's practical exercises.
 
-### Minimal Playground Configuration
+::remark-box
+---
+kind: warning
+---
 
-The most basic playground configuration requires only a name:
+⚠️ Only tutorials with playgrounds can be **started** and **completed** by iximiuz Labs users.
+::
 
-```yaml
-playground:
-  name: docker
-```
-
-This minimal configuration creates a default playground with a set of standard behaviors.
-
-### Customizing Machines
+### Customizing Playground Machines
 
 If you need to alter the set of machines or customize their behavior, you can define a machines attribute within the playground section. This lets you specify details such as:
 
