@@ -1,97 +1,31 @@
 ---
 kind: challenge
 
-title: {{ix-title}}
+title: 'Sample Challenge: Start and Inspect a Container With Docker'
 
 description: |
-  {{ix-description}}
+  Learn how to author challenges on iximiuz Labs by "reverse engineering" a realistic challenge example.
 
 categories:
-{{ix-categories}}
+  - linux
+  - containers
 
 tagz:
-{{ix-tags}}
+  - hello-world
+  - example
+  - challenge-docs
 
-difficulty: {{ix-difficulty}}
+difficulty: easy
 
-createdAt: {{ix-created-at}}
-updatedAt: {{ix-updated-at}}
+createdAt: 2025-03-28
+updatedAt: 2025-03-29
 
 cover: __static__/different-ways-to-start-containers.png
 
 playground:
-  # See https://labs.iximiuz.com/api/playgrounds for available playgrounds
-  name: k3s
-  # Protect the playground's registry (registry.iximiuz.com) with a username and password.
-  # default: no authentication
-  registryAuth: testuser:testpassword
-
-  # List available tabs (by default IDE, kexp, and one terminal tab per machine are used)
-  tabs:
-  - kind: ide             # enable the online IDE (code-server)
-  - kind: kexp            # enable the Kubernetes Visualizer (kexp)
-  - kind: web-page        # embed an external web page
-    name: Blog
-    url: https://iximiuz.com
-  - machine: dev-machine  # 'dev-machine' is a hostname in this case, implies 'kind: terminal'
-  - machine: cplane-01    # another machine, with the hostname 'cplane-01'
-  - number: 80            # expose port 80 on the 'dev-machine' machine as a tab
-    machine: dev-machine  # implies 'kind: http-port'
-
-  # List available machines (by default, all playground machines are available)
-  machines:
-  - name: dev-machine
-    users:
-    - name: laborant
-      default: true
-      welcome: 'Welcome to the jungle!'
-      # Allow the following identities to log in to the machine as this user.
-      # Defaults to ['conductor', '<current-user>']. The special 'conductor'
-      # identity is used by the UI to provide access via the web terminal, and
-      # the <current-user> is used to allow cross-machine access within the same
-      # playground.
-      # sshAuthorizedUsers:
-      #   - conductor
-      #   - laborant
-    # Override default resources (cannot be above the limits of the playground)
-    resources:
-      cpuCount: 1
-      ramSize: "1Gi"
-  - name: cplane-01
-    users:
-    - name: root
-      default: true
-      welcome: '-'  # a hacky way to disable the welcome message
-    # Disable SSH access to the machine (automatically disables the terminal tab)
-    noSSH: true
+  name: docker
 
 tasks:
-  # Tasks are executed until they complete (exit with code 0).
-  init_task_1:
-    # Init tasks are used to finalize the setup of the playground.
-    # Until all init tasks are completed, the playground screen shows
-    # a loading animation. Init tasks run in parallel but before all
-    # regular tasks. If the sequence of the init tasks is important,
-    # you can specify the `needs` property.
-    init: true
-    # By default, the task is executed on every machine of the playground.
-    # If the task needs to be executed only on a specific machine, you
-    # can specify it with the `machine` property. Beware, at the moment,
-    # either none or all tasks must have the `machine` property (in the latter case,
-    # different tasks may be executed on different machines).
-    # machine: dev-machine
-
-    # By default, tasks are executed as the `root` user.
-    # If the task needs to be executed as a different user, you
-    # can specify it with the `user` property.
-    user: laborant
-
-    run: |
-      docker run hello-world
-
-  # Regular tasks are used to check if the challenge is completed.
-  # Regular tasks run in parallel but can be serialized with the
-  # `needs` property.
   verify_container:
     hintcheck: |
       if [ $(docker_container_count_total) -gt 1 ]; then
@@ -116,21 +50,21 @@ tasks:
 
       docker ps -q --no-trunc
 
-  # Ready tasks are executed in a loop until they either complete (exit with 0)
-  # or fail (exiting with a non-zero code doesn't mean failure, see failcheck for
-  # details). There is a small delay between consecutive executions of the task
-  # (currently 1 second, but it's subject to change).
   verify_container_id:
     needs:
       - verify_container
     env:
       - CONTAINER_ID=x(.needs.verify_container.stdout)
-    # By default, the task will time out after 10 seconds. If you expect a particular
-    # check to take longer (or it intentionally should time out faster), you can
-    # configure the timeout with the `timeout_seconds` property.
-    timeout_seconds: 5
-    # `run` is a mandatory part of each task. The solution checker (examiner)
-    # will keep executing the task's `run` script until it exits with 0.
+    failcheck: |
+      if ! docker_container_is_running ${CONTAINER_ID}; then
+        echo "The container isn't running anymore. Did it crash?"
+        exit 1
+      fi
+    hintcheck: |
+      if ! docker_container_is_running ${CONTAINER_ID}; then
+        echo "To understand what happened, try running 'docker ps -a'."
+        echo "It'll show all containers, including non-running ones."
+      fi
     run: |
       PROVIDED_ID="$(cat /tmp/container-id.txt)"
       if [ "${PROVIDED_ID}" == "" ]; then
@@ -141,25 +75,6 @@ tasks:
       if [[ "${CONTAINER_ID}" != "${PROVIDED_ID}"* ]]; then
         echo "Container ID is not correct"
         exit 1
-      fi
-    # If defined, the failcheck is executed before the task's `run` instructions.
-    # If the failcheck exits with a non-zero exit code, the task is considered failed,
-    # and the whole challenge transitively is marked as failed, too (i.e., the user
-    # will have to restart the challenge).
-    failcheck: |
-      if ! docker_container_is_running ${CONTAINER_ID}; then
-        echo "The container isn't running anymore. Did it crash?"
-        exit 1
-      fi
-    # Hintcheck is optional. If defined, the solution checker (examiner)
-    # will run the hintcheck script after every task's `run` script.
-    # The exit code of the hintcheck script has no effect on the task's outcome.
-    # Any output of the hintcheck script (stdout and stderr) gets showed in the
-    # task's UI element (so-called, dynamic hints).
-    hintcheck: |
-      if ! docker_container_is_running ${CONTAINER_ID}; then
-        echo "To understand what happened, try running 'docker ps -a'."
-        echo "It'll show all containers, including non-running ones."
       fi
 
   verify_container_pid:
@@ -217,16 +132,51 @@ tasks:
       fi
 ---
 
+This sample material serves as a guide on how to author **challenges** on iximiuz Labs.
+You can find the source of this document on [GitHub](https://github.com/iximiuz/labs-content-samples/tree/main/sample-challenge).
+Feel free to use it as a starting point for your own challenges.
+
+
+## What is a Challenge on iximiuz Labs?
+
+Challenges are focused hands-on problems designed to help the learner hone their DevOps or Server Side skills.
+While tutorials are more about explaining concepts, challenges are about applying those concepts.
+Some challenges can be more educational, while others can be based on real-world scenarios.
+Challenges must have automated solution checks and can provide hints and feedback based on user's actions in the playground.
+
+
+## Can I add a Solution to the Challenge?
+
+Yes, but please don't place it in the challenge's `index.md` file.
+Instead, create a new file in the challenge's directory named `solution.md`
+(or `solution-01.md`, `solution-02.md`, etc. if the challenge has multiple solutions) and place the solution there.
+This way, you won't "spoil" the challenge for those learners who prefer to solve it on their own.
+
+
+## How to Author a Challenge
+
+From the authoring perspective, the process is rather similar to authoring tutorials.
+Refer to the comprehensive [tutorial authoring guide](/tutorials/sample-tutorial) to learn how to author content on iximiuz Labs.
+The main difference between a tutorial and a challenge is semantic:
+
+- A tutorial explains concepts and provides a guided walkthrough.
+- A challenge expects the learner to apply concepts.
+
+Similar to tutorials, challenges can be started and completed by authenticated users.
+However, the completion of a challenge is checked automatically in the background,
+so the user doesn't need to mark the challenge as completed manually when all tasks are accomplished.
+
+
+## Example Challenge
+
 In this challenge, you will need to perform the most fundamental Docker operation - start a container.
 
 ::image-box
 ---
-src: __static__/different-ways-to-start-containers.png
-alt: 'Different ways to start containers (Docker, Podman, nerdctl, ctr.)'
-max-width: 600px
+:src: __static__/different-ways-to-start-containers.png
+:alt: Different ways to start containers (Docker, Podman, nerdctl, ctr.)
+:max-width: 600px
 ---
-
-<i>Different ways to start containers (Docker, Podman, nerdctl, ctr.)</i>
 ::
 
 You can use any container image you like,
@@ -329,6 +279,14 @@ You can always fall back to `docker inspect` to cross-check your findings.
 
 Approximating containers to _regular Linux processes_ is helpful, but it's not very accurate.
 Thinking of containers as of _boxes for processes_ might be even more helpful at times.
+
+::image-box
+---
+:src: __static__/container-box.png
+:alt: A Linux container visualized as a box for one application.
+:max-width: 500px
+---
+::
 
 From inside the box, it may look like the containerized app is running on its own machine.
 In particular, such a virtualized environment will have its own network interface and an IP address.

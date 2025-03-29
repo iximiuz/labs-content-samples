@@ -1,4 +1,4 @@
-# labs-content-samples
+# iximiuz Labs Content Samples
 
 A collection of self-documenting sample tutorials, challenges, skill paths and other forms of iximiuz Labs content:
 
