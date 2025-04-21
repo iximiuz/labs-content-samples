@@ -602,6 +602,108 @@ spec:
       app: my-app
 ```
 
+### How to Embed Tabbed Code Blocks
+
+iximiuz Labs supports tabbed code blocks with the `tabbed` MDC component:
+
+```markdown
+::tabbed
+---
+tabs:
+  - name: tab1
+    title: Tab 1
+  - name: tab2
+    title: Tab 2
+---
+#tab1
+...markdown...
+
+#tab2
+...markdown...
+::
+```
+
+::remark-box
+
+The content of each tab is regular markdown and can include any elements supported by the markdown syntax,
+including other rich MDC components.
+::
+
+Here is an example of a tabbed code block:
+
+::tabbed
+---
+tabs:
+  - name: golang
+    title: Go
+  - name: python
+    title: Python
+  - name: javascript
+    title: JavaScript
+---
+#golang
+```go
+package main
+
+func main() {
+    fmt.Println("Hello, World!")
+}
+```
+
+#python
+```python
+print("Hello, World!")
+```
+
+#javascript
+```javascript
+console.log("Hello, World!");
+```
+::
+
+All tabbed blocks in the document are synchronized, so if the user switches to another code tab in one block,
+the same tab will be selected in all other tabbed blocks on the page:
+
+::tabbed
+---
+tabs:
+  - name: golang
+    title: Go
+  - name: python
+    title: Python
+  - name: javascript
+    title: JavaScript
+---
+#golang
+```go
+package main
+
+func main() {
+    fmt.Println("Multiple tabbed sections are supported!")
+}
+```
+
+::remark-box
+---
+kind: warning
+---
+This is a warning remark box inside a tabbed block.
+::
+
+#python
+```python
+print("Multiple tabbed sections are supported!")
+```
+
+- This is
+- ...a list
+
+#javascript
+```javascript
+console.log("Multiple tabbed sections are supported!");
+```
+::
+
 ### How to Embed Visual Boxes for Notes, Details, and Hints
 
 When information doesn't belong to the main flow of the tutorial, but it's still important to mention,
