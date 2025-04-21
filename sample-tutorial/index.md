@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-03-29
+updatedAt: 2025-04-21
 
 cover: __static__/cover.png
 
@@ -437,6 +437,59 @@ All standard markdown elements are supported, including:
 
 In addition, iximiuz Labs extends standard markdown with rich visual and interactive components (see [MDC](https://nuxt.com/modules/mdc)).
 
+### Content Folder Structure
+
+For convenience, iximiuz Labs allows authors to store any files related to the tutorial in the same directory as the tutorial's markdown file.
+Here is a typical folder structure for a tutorial:
+
+```text
+my-tutorial/
+├── index.md
+├── ...other files...
+└── __static__/
+    ├── cover.png
+    └── image.png
+```
+
+All files in the `my-tutorial` directory are automatically uploaded to the remote content storage by `labctl`.
+This is handy when you need to accompany the tutorial with some helper scripts, internal notes and drafts, etc.
+
+**Files other than the markdown content (i.e., `index.md`) and the static assets sub-folder are not accessible via the API**,
+so you are free to store any files in the tutorial's directory that are not intended to be seen by the users.
+
+At the same time, the `__stаtic__` sub-folder is a special folder that is automatically uploaded to the CDN
+and can be referenced in the tutorial's markdown using the `__stаtic__` prefix to:
+
+- Embed images (see [How to Embed Images](#how-to-embed-images) below)
+- Expose files (e.g., helper scripts) to be downloaded by the playground VMs
+
+**Unlike other files in the tutorial's directory, the `__stаtic__` folder is publicly accessible**,
+so you should not put any internal use-only information in it.
+
+::remark-box
+---
+kind: error
+---
+
+### WARNING - UNPROTECTED ASSETS
+
+⚠️&nbsp;&nbsp;Do not put any sensitive information in `__stаtic__` folder&nbsp;&nbsp;️⚠️
+
+While the markdown content of tutorials (or any other forms of content on iximiuz Labs)
+is subject to full authorization checks,
+the static assets are not. This limitation is due to the extensive
+use of CND (e.g., Cloudflare) to deliver static assets with the best
+possible performance in all regions of the world.
+
+With some careful URL-construction, files placed in the `__stаtic__`
+folder can be fetched via the API by potentially unauthorized users.
+This includes anonymous users, bots, and crawlers. The caching duration
+of these assets is also very long (up to 1 year).
+
+If you wish to store private files alongside the content, make sure
+to place them outside of the `__stаtic__` folder.
+::
+
 ### How to Embed Images
 
 All images referenced in the tutorial's markdown must be stored in the `__stаtic__` directory next to the `index.md` file,
@@ -447,7 +500,7 @@ and the relative paths will be substituted with the actual URLs when the tutoria
 While the standard markdown syntax for embedding images is supported,
 iximiuz Labs also offers two rich MDC components for embedding images.
 
-#### Zoomable Images with the `image-box` Component
+#### Zoom-able Images with the `image-box` Component
 
 ```markdown
 ::image-box
@@ -503,6 +556,28 @@ slides:
   alt: "Builder Pattern for a Node.js application."
 ---
 ::
+
+#### Help! My Images Aren't Updating
+
+Images are cached by the CDN for up to 1 year and the cache key is the image's filename.
+This means that if you want to update an image you previously uploaded,
+you need to change the filename. You can follow a simple naming convention:
+
+```sh
+__stаtic__/image-v1.png
+__stаtic__/image-v2.png
+...
+```
+
+::remark-box
+---
+kind: warning
+---
+
+With the above naming convention, you'll also need to update the markdown references(s) to the image
+every time you upload a new version of the image file.
+::
+
 
 ### How to Embed Code Snippets
 
@@ -1161,6 +1236,156 @@ Waiting for the container to be running...
 
 #completed
 Congratulations! The container is running 🎉
+::
+
+::details-box
+---
+:summary: 'List of Built-in Helper Functions'
+---
+
+The task engine defines a number of built-in helper functions that can be used in the `run` script:
+
+```sh
+#!/usr/bin/env bash
+
+###############################################################################
+# Docker
+###############################################################################
+docker_container_name() {
+  docker container inspect --format '{{.Name}}' "$@"
+}
+
+docker_container_pid() {
+  docker container inspect --format '{{.State.Pid}}' "$@"
+}
+
+docker_container_ip() {
+  docker container inspect --format '{{.NetworkSettings.IPAddress}}' "$@"
+}
+
+docker_container_image() {
+  docker container inspect --format '{{.Config.Image}}' "$@"
+}
+
+docker_container_image_id() {
+  docker container inspect --format '{{.Image}}' "$@"
+}
+
+docker_container_is_running() {
+  [ "$(docker container inspect --format '{{.State.Running}}' $@ 2>/dev/null)" = "true" ]
+}
+
+docker_container_exit_code() {
+  docker container inspect --format '{{.State.ExitCode}}' $@
+}
+
+docker_container_count_total() {
+  docker ps -aq | wc -l
+}
+
+docker_container_count_running() {
+  docker ps -q | wc -l
+}
+
+docker_image_id() {
+  docker image inspect --format '{{.Id}}' "$@"
+}
+
+docker_image_size_bytes() {
+  docker image inspect --format '{{.Size}}' "$@"
+}
+
+###############################################################################
+# Podman
+###############################################################################
+podman_container_name() {
+  sudo podman inspect --format '{{.Name}}' "$@"
+}
+
+podman_container_pid() {
+  sudo podman inspect --format '{{.State.Pid}}' "$@"
+}
+
+podman_container_ip() {
+  sudo podman inspect --format '{{.NetworkSettings.IPAddress}}' "$@"
+}
+
+podman_container_is_running() {
+  [ "$(sudo podman inspect --format '{{.State.Running}}' $@ 2>/dev/null)" = "true" ]
+}
+
+podman_container_exit_code() {
+  sudo podman inspect --format '{{.State.ExitCode}}' $@
+}
+
+podman_container_count_total() {
+  sudo podman ps -aq | wc -l
+}
+
+podman_container_count_running() {
+  sudo podman ps -q | wc -l
+}
+
+###############################################################################
+# nerdctl
+###############################################################################
+nerdctl_container_name() {
+  sudo nerdctl inspect --format '{{.Name}}' "$@"
+}
+
+nerdctl_container_pid() {
+  sudo nerdctl inspect --format '{{.State.Pid}}' "$@"
+}
+
+nerdctl_container_ip() {
+  sudo nerdctl inspect --format '{{.NetworkSettings.IPAddress}}' "$@"
+}
+
+nerdctl_container_is_running() {
+  [ "$(sudo nerdctl inspect --format '{{.State.Running}}' $@ 2>/dev/null)" = "true" ]
+}
+
+nerdctl_container_exit_code() {
+  sudo nerdctl inspect --format '{{.State.ExitCode}}' $@
+}
+
+nerdctl_container_count_total() {
+  sudo nerdctl ps -aq | wc -l
+}
+
+nerdctl_container_count_running() {
+  sudo nerdctl ps -q | wc -l
+}
+
+###############################################################################
+# ctr
+###############################################################################
+ctr_container_netns() {
+  sudo lsns -p $(ctr_container_pid $@) -t net --nowrap --noheadings | awk '{print $1}'
+}
+
+ctr_container_pid() {
+  sudo ctr tasks ps "$@" | head -n 2 | tail -n 1 | awk '{print $1}'
+}
+
+ctr_container_is_running() {
+  sudo ctr tasks list | grep RUNNING | grep -F "$@" >/dev/null
+}
+
+ctr_container_count_total() {
+  sudo ctr containers list -q | wc -l
+}
+
+ctr_container_count_running() {
+  sudo ctr tasks list | grep RUNNING | wc -l
+}
+```
+
+You can register your own helper functions by creating shell scripts in the following location:
+
+```sh
+/opt/iximiuz-labs/examiner/checks.d
+```
 ::
 
 ### Dynamic Hints and Failure Conditions
