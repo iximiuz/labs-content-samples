@@ -43,6 +43,20 @@ playground:
     resources:
       cpuCount: 1
       ramSize: "1Gi"
+    # Startup files are created on the machine during its initialization.
+    # You can specify up to 10 files per machine. Files are created before
+    # the machine boots, so it's a perfect place to pre-configure the machine
+    # before the very first init task or login session starts.
+    startupFiles:
+      - path: /home/laborant/.bashrc
+        content: |
+          export SOME_ENV_VAR=some-value
+
+          export PS1='\u@\h:\w (overwritten)\$ '
+
+        append: true # skip if the file needs to be overwritten (or created)
+        # owner: UID:GID # default: 0:0 if append is false, otherwise the file owner is kept
+        # mode: <octal> # default: 0644 if append is false, otherwise the file mode is kept
     # users: ...
     # noSSH: ...
 
@@ -900,7 +914,7 @@ playground:
 ---
 ```
 
-You can choose any iximiuz Labs playground (an [official "base" playground](/playgrounds?filter=base), any of the [community-maintained playgrounds](/playgrounds?filter=community), or [your own custom playground](/playgrounds?filter=authored)) and optionally tweak it further by overriding the playground's `machines`, and `tabs` attributes in the tutorial's Front Matter.
+You can choose any iximiuz Labs playground (an [official "base" playground](/playgrounds?filter=base), any of the [community-maintained playgrounds](/playgrounds?filter=community), or [your own custom playground](/playgrounds?filter=my-custom)) and optionally tweak it further by overriding the playground's `machines`, and `tabs` attributes in the tutorial's Front Matter.
 
 Click [here](/playgrounds?filter=all) to see a full list of available playgrounds or run the following command:
 
@@ -914,7 +928,7 @@ curl -s https://labs.iximiuz.com/api/playgrounds?filter=all \
 kind: warning
 ---
 
-⚠️ The playground you choose is subject to its own access control and usage limits.
+⚠️ **The playground you choose is subject to its own access control and usage limits.**
 Make sure that it's at least as permissive as the corresponding tutorial's access control policy.
 For instance, if the tutorial is publicly accessible, but the playground is private or restricted,
 the users will not be able to start the tutorial.
@@ -983,6 +997,20 @@ playground:
     resources:
       cpuCount: 1
       ramSize: "1Gi"
+    # Startup files are created on the machine during its initialization.
+    # You can specify up to 10 files per machine. Files are created before
+    # the machine boots, so it's a perfect place to pre-configure the machine
+    # before the very first init task or login session starts.
+    startupFiles:
+      - path: /home/laborant/.bashrc
+        content: |
+          export SOME_ENV_VAR=some-value
+
+          export PS1='\u@\h:\w (overwritten)\$ '
+
+        append: true # skip if the file needs to be overwritten (or created)
+        # owner: UID:GID # default: 0:0 if append is false, otherwise the file owner is kept
+        # mode: <octal> # default: 0644 if append is false, otherwise the file mode is kept
     # users: ...
     # noSSH: ...
 
