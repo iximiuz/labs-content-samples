@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-04-21
+updatedAt: 2025-05-09
 
 cover: __static__/cover.png
 
@@ -900,13 +900,25 @@ playground:
 ---
 ```
 
-At the moment, you can only choose from the "official" iximiuz Labs playgrounds,
-but further customization is allowed by overriding the playground's `machines`, and `tabs` attributes (see below).
-Click [here](/playgrounds?filter=base) to see a full list of available playgrounds.
+You can choose any iximiuz Labs playground (an [official "base" playground](/playgrounds?filter=base), any of the [community-maintained playgrounds](/playgrounds?filter=community), or [your own custom playground](/playgrounds?filter=authored)) and optionally tweak it further by overriding the playground's `machines`, and `tabs` attributes in the tutorial's Front Matter.
+
+Click [here](/playgrounds?filter=all) to see a full list of available playgrounds or run the following command:
 
 ```sh
-curl -s https://labs.iximiuz.com/api/playgrounds?filter=base | jq -r '.[] | .name'
+curl -s https://labs.iximiuz.com/api/playgrounds?filter=all \
+  | jq -r '.[] | .name + " - " + .description'
 ```
+
+::remark-box
+---
+kind: warning
+---
+
+⚠️ The playground you choose is subject to its own access control and usage limits.
+Make sure that it's at least as permissive as the corresponding tutorial's access control policy.
+For instance, if the tutorial is publicly accessible, but the playground is private or restricted,
+the users will not be able to start the tutorial.
+::
 
 While a tutorial can be created without a playground,
 it is highly recommended to attach one to enhance the learning experience.
