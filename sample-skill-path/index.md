@@ -21,7 +21,7 @@ difficulties:
   - medium
 
 createdAt: 2025-03-28
-updatedAt: 2025-03-29
+updatedAt: 2025-06-06
 
 cover: __static__/cover.png
 ---
@@ -49,7 +49,7 @@ The `index.md` file of the skill path typically has the short introduction to th
 It's not required, but it's a good place to mention the main topics you'll be covering in the skill path,
 and what the student can expect to learn from the skill path.
 
-Similar to other content types, the skill path can also embed images from its `__stаtic__` subdirectory.
+Similar to other content types, the skill path can also embed images from its `__static__` subdirectory.
 
 ::image-box
 ---

@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-05-09
+updatedAt: 2025-06-06
 
 cover: __static__/cover.png
 
@@ -371,7 +371,7 @@ tagz:
 
 createdAt: 2025-03-26
 
-cover: __stаtic__/cover.png
+cover: <image filename from the __static__ folder>
 ---
 ```
 
@@ -416,7 +416,7 @@ tagz:                  # required
 createdAt: <string>    # required, format: YYYY-MM-DD[THH:MM:SS]
 updatedAt: <string>    # optional, format: YYYY-MM-DD[THH:MM:SS]
 
-cover: __stаtic__/path/to/cover.png  # required
+cover: <image filename from the __static__ folder>  # required
 
 playground:            # optional
   name: <string>
@@ -460,7 +460,7 @@ Here is a typical folder structure for a tutorial:
 my-tutorial/
 ├── index.md
 ├── ...other files...
-└── __static__/
+└── __static__
     ├── cover.png
     └── image.png
 ```
@@ -471,13 +471,13 @@ This is handy when you need to accompany the tutorial with some helper scripts, 
 **Files other than the markdown content (i.e., `index.md`) and the static assets sub-folder are not accessible via the API**,
 so you are free to store any files in the tutorial's directory that are not intended to be seen by the users.
 
-At the same time, the `__stаtic__` sub-folder is a special folder that is automatically uploaded to the CDN
-and can be referenced in the tutorial's markdown using the `__stаtic__` prefix to:
+At the same time, the `__static__` sub-folder is a special folder that is automatically uploaded to the CDN
+and can be referenced in the tutorial's markdown using the `__static__` prefix to:
 
 - Embed images (see [How to Embed Images](#how-to-embed-images) below)
 - Expose files (e.g., helper scripts) to be downloaded by the playground VMs
 
-**Unlike other files in the tutorial's directory, the `__stаtic__` folder is publicly accessible**,
+**Unlike other files in the tutorial's directory, the `__static__` folder is publicly accessible**,
 so you should not put any internal use-only information in it.
 
 ::remark-box
@@ -487,7 +487,7 @@ kind: error
 
 ### WARNING - UNPROTECTED ASSETS
 
-⚠️&nbsp;&nbsp;Do not put any sensitive information in `__stаtic__` folder&nbsp;&nbsp;️⚠️
+⚠️&nbsp;&nbsp;Do not put any sensitive information in `__static__` folder&nbsp;&nbsp;️⚠️
 
 While the markdown content of tutorials (or any other forms of content on iximiuz Labs)
 is subject to full authorization checks,
@@ -495,19 +495,19 @@ the static assets are not. This limitation is due to the extensive
 use of CND (e.g., Cloudflare) to deliver static assets with the best
 possible performance in all regions of the world.
 
-With some careful URL-construction, files placed in the `__stаtic__`
+With some careful URL-construction, files placed in the `__static__`
 folder can be fetched via the API by potentially unauthorized users.
 This includes anonymous users, bots, and crawlers. The caching duration
 of these assets is also very long (up to 1 year).
 
 If you wish to store private files alongside the content, make sure
-to place them outside of the `__stаtic__` folder.
+to place them outside of the `__static__` folder.
 ::
 
 ### How to Embed Images
 
-All images referenced in the tutorial's markdown must be stored in the `__stаtic__` directory next to the `index.md` file,
-and their paths in the `src` attributes must be relative and start with `__stаtic__`.
+All images referenced in the tutorial's markdown must be stored in the `__static__` directory next to the `index.md` file,
+and their paths in the `src` attributes must be relative and start with `__static__`.
 The `labctl content push` command will automatically upload all images from the static directory,
 and the relative paths will be substituted with the actual URLs when the tutorial is rendered as a web page.
 
@@ -519,7 +519,7 @@ iximiuz Labs also offers two rich MDC components for embedding images.
 ```markdown
 ::image-box
 ---
-:src: __stаtic__/<image-name>.(png|jpg|...)
+:src: <image-name>.(png|jpg|...)
 :alt: '<short image description>'
 :max-width: 1000px # optional
 :margin: 0px auto  # optional
@@ -550,9 +550,9 @@ _Click on the image to zoom in._
 ::slide-show
 ---
 slides:
-- image: __stаtic__/<image1>.(png|jpg|...)
+- image: <image1>.(png|jpg|...)
   alt: <description of the first image>
-- image: __stаtic__/<image2>.(png|jpg|...)
+- image: <image2>.(png|jpg|...)
   alt: <description of the second image>
 - ...
 ---
