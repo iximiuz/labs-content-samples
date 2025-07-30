@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-06-06
+updatedAt: 2025-07-30
 
 cover: __static__/cover.png
 
@@ -179,7 +179,19 @@ tasks:
     # This task just echoes the user input (but usually, you'd want to assert
     # something about the input).
     run: |
+      # User input is available in the `x(.input)` template variable.
+      echo "x(.input)"
+
+      # If the `destination` property is set, user input is also stored in the file.
       cat /tmp/container-name.txt
+
+      if [[ "x(.input)" != "my-awesome-container" ]]; then
+        echo "The container name is not as awesome as it should be."
+        exit 1
+      fi
+    hintcheck: |
+      echo "The container name is not as awesome as it should be."
+      echo "Try using 'my-awesome-container'."
 
   verify_container_is_running:
     machine: dev-machine
@@ -1265,8 +1277,8 @@ The input is validated, and if correct, it's passed to the corresponding task fo
 ---
 :tasks: tasks
 :name: <task-name>
-:validate: <simple shell command or pipeline>
-:destination: <path to a file to store the input>
+:validateRegex: <optional regular expression, applied on the client-side>
+:destination: <optional path to a file to store the input in the playground VM>
 ---
 #active
 <what needs to be entered by the user>
@@ -1283,7 +1295,7 @@ Here's an example of a user-input task UI element:
 ---
 :tasks: tasks
 :name: input_container_name
-:validate: 'echo "x(.input)" | grep "[0-9a-f-]\{2,16\}"'
+:validateRegex: ^[0-9a-zA-Z-]{2,64}$
 :destination: /tmp/container-name.txt
 ---
 #active
@@ -1298,7 +1310,7 @@ Nice one! You certainly have a good taste in names 🎉
 ---
 :tasks: tasks
 :name: input_container_name
-:validate: 'echo "x(.input)" | grep "[0-9a-f-]\{2,16\}"'
+:validateRegex: ^[0-9a-zA-Z-]{2,64}$
 :destination: /tmp/container-name.txt
 ---
 #active
@@ -1323,7 +1335,20 @@ tasks:
     # This task just echoes the user input (but usually, you'd want to assert
     # something about the input).
     run: |
+      # User input is available in the `x(.input)` template variable.
+      echo "x(.input)"
+
+      # If the `destination` property is set, user input is also stored in the file.
       cat /tmp/container-name.txt
+
+      if [[ "x(.input)" != "my-awesome-container" ]]; then
+        echo "The container name is not as awesome as it should be."
+        exit 1
+      fi
+
+    hintcheck: |
+      echo "The container name is not as awesome as it should be."
+      echo "Try using 'my-awesome-container'."
 ```
 
 Submit any valid container name to see the task to pass.

@@ -18,7 +18,7 @@ tagz:
 difficulty: easy
 
 createdAt: 2025-03-28
-updatedAt: 2025-03-29
+updatedAt: 2025-07-30
 
 cover: __static__/different-ways-to-start-containers.png
 
@@ -210,7 +210,7 @@ Can you find the ID of the container that you've just started?
 ---
 :tasks: tasks
 :name: verify_container_id
-:validate: '[[ "x(.needs.verify_container.stdout)" = "x(.input)"* ]]'
+:validateRegex: ^[a-f0-9]+$
 :destination: /tmp/container-id.txt
 ---
 #active
@@ -237,7 +237,7 @@ Can you locate the main container's process? What is its PID?
 ---
 :tasks: tasks
 :name: verify_container_pid
-:validate: '[ "$(docker_container_pid x(.needs.verify_container.stdout))" = "x(.input)" ]'
+:validateRegex: ^[0-9]+$
 :destination: /tmp/container-pid.txt
 ---
 #active
@@ -296,7 +296,7 @@ Can you find the IP address of the container that you've just started?
 ---
 :tasks: tasks
 :name: verify_container_ip
-:validate: '[ "$(docker_container_ip x(.needs.verify_container.stdout))" = "x(.input)" ]'
+:validateRegex: ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$
 :destination: /tmp/container-ip.txt
 ---
 #active
