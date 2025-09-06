@@ -14,7 +14,7 @@ courses:
       - ctr/container-management
 ---
 
-::card-content
+::card
 ---
 :content: courses.containerd_cli
 :lesson: ctr/container-management

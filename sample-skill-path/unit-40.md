@@ -14,7 +14,7 @@ courses:
       - what-is-and-why-dagger
 ---
 
-::card-content
+::card
 ---
 :content: courses.dagger
 :lesson: what-is-and-why-dagger

@@ -15,7 +15,7 @@ challenges:
 **A single skill path can have an arbitrary number of challenge, tutorial, course, and lesson units.
 The skill path is marked as complete when all units are completed.**
 
-::card-challenge
+::card
 ---
 :challenge: challenges.kubernetes_pod_with_sleepy_init_sequence
 ---

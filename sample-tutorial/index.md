@@ -18,7 +18,7 @@ tagz:
   - tutorial-docs
 
 createdAt: 2025-03-28
-updatedAt: 2025-07-30
+updatedAt: 2025-09-06
 
 cover: __static__/cover.png
 
@@ -276,8 +276,8 @@ tasks:
 
 # EMBEDDED CHALLENGES
 #
-# Challenges to "embed" into the tutorial's text using ::card-challenge:: component.
-# See ::card-challenge:: components in the markdown below for usage examples.
+# Challenges to "embed" into the tutorial's text using ::card:: component.
+# See ::card:: components in the markdown below for usage examples.
 # Note: every challenge identifier here is exactly the same as
 # in the challenge's URL but with - replaced with _ (underscore).
 # You can embed any challenges from the https://labs.iximiuz.com/challenges catalog.
@@ -640,6 +640,7 @@ tabs:
     title: Tab 1
   - name: tab2
     title: Tab 2
+group: optional
 ---
 #tab1
 ...markdown...
@@ -687,7 +688,8 @@ console.log("Hello, World!");
 ```
 ::
 
-All tabbed blocks in the document are synchronized, so if the user switches to another code tab in one block,
+All tabbed blocks of the same group in the document are synchronized,
+so if the user switches to another code tab in one block,
 the same tab will be selected in all other tabbed blocks on the page:
 
 ::tabbed
@@ -851,10 +853,10 @@ A _challenge card_ is a rich link to the corresponding challenge that shows a pr
 some metadata, and a button to start the challenge.
 Authors can embed any challenges listed in the public [challenges catalog](/challenges) or prepare their own [challenges](/new/challenge).
 
-Challenges are embedded into the tutorial using the `card-challenge` component with the corresponding challenge ~~name~~ key:
+Challenges are embedded into the tutorial using the `card` component with the corresponding challenge ~~name~~ key:
 
 ```markdown
-::card-challenge
+::card
 ---
 # challenges is an object in the tutorial's front matter
 :challenge: challenges.<challenge_key>
@@ -877,13 +879,13 @@ challenges:
 
 Examples:
 
-::card-challenge
+::card
 ---
 :challenge: challenges.docker_101_container_run
 ---
 ::
 
-::card-challenge
+::card
 ---
 :challenge: challenges.kubernetes_pod_with_faulty_init_sequence
 ---
@@ -1086,29 +1088,29 @@ playground:
 
 ### Interacting with Tabs from Markdown
 
-You can **activate a certain tab (by its ID, name, or machine) from the markdown** using the `tab-locator-inline` component.
+You can **activate a certain tab (by its ID, name, or machine) from the markdown** using the inline `tab` component.
 Here is an example:
 
 ```markdown
-Run this command from the :tab-locator-inline{text='dev-machine' machine='dev-machine'}:
+Run this command from the :tab{text='dev-machine' machine='dev-machine'}:
 
 ...
 
-Then, switch to the :tab-locator-inline{text='IDE' name='IDE'}...
+Then, switch to the :tab{text='IDE' name='IDE'}...
 ```
 
 And here is how it looks when rendered:
-Run this command from the :tab-locator-inline{text='dev-machine' machine='dev-machine'}...
-Then, switch to the :tab-locator-inline{text='IDE' name='IDE'}...
+Run this command from the :tab{text='dev-machine' machine='dev-machine'}...
+Then, switch to the :tab{text='IDE' name='IDE'}...
 
 It is also possible to **create new tabs dynamically**, but at the moment, only `terminal` tabs are supported:
 
 ```markdown
-Run this command from a :tab-locator-inline{text='new terminal' machine='cplane-01' :new=true}...
+Run this command from a :tab{text='new terminal' machine='cplane-01' :new=true}...
 ```
 
 Here is how it looks when rendered:
-Run this command from a :tab-locator-inline{text='new terminal' machine='cplane-01' :new=true}...
+Run this command from a :tab{text='new terminal' machine='cplane-01' :new=true}...
 
 ### Playground Container Registry
 

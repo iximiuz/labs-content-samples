@@ -12,7 +12,7 @@ courses:
   dagger: {}
 ---
 
-::card-content
+::card
 ---
 :content: courses.dagger
 ---

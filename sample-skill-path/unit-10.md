@@ -12,7 +12,7 @@ tutorials:
   extracting_container_image_filesystem: {}
 ---
 
-::card-content
+::card
 ---
 :content: tutorials.extracting_container_image_filesystem
 ---

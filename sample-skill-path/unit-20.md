@@ -19,7 +19,7 @@ You can place your text before or after the card.**
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien. Nulla facilisi.
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien. Nulla facilisi.
 
-::card-challenge
+::card
 ---
 :challenge: challenges.kubernetes_pod_with_faulty_init_sequence
 ---
